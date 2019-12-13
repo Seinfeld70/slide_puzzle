@@ -32,15 +32,11 @@ def randomlyFill():
 
 
 def changeState(initial, final):
-    print("Changing state from \t", initial)
     state[initial] = state[final]
     state[final] = 8
-    print("to\t", final)
 
 
 def move(row, column):
-    print("Before\t", state)
-    print('\nRow = {}\tColumn = {}'.format(row, column))
     if row == 1 and column == 0:
         if (state[1] == 8):
             changeState(1, 0)
@@ -122,7 +118,6 @@ def move(row, column):
         elif (state[7] == 8):
             changeState(7, 8)
             swap({"row": row, "column": column}, {"row": 3, "column": 1})
-    print("After\t", state)
 
 
 def swap(intial, final):
@@ -136,8 +131,9 @@ def swap(intial, final):
 
     imgs[indexI] = ImageTk.PhotoImage(Image.open(
         './images/Layer ' + str(indexI) + '.jpg'))
+
     imgs[indexF] = ImageTk.PhotoImage(Image.open(
-        './images/Layer ' + str(indexF) + '.jpg'))
+        './images/Layer 8.jpg'))
 
     imgs_con[indexI] = Button(root, image=imgs[indexI])
     imgs_con[indexF] = Button(root, image=imgs[indexF])
@@ -153,7 +149,6 @@ for x in range(9):
     imgs.append(ImageTk.PhotoImage(Image.open(
         './images/Layer ' + str(state[x]) + '.jpg')))
 
-
 img_con_0 = Button(root, image=imgs[0], command=lambda: move(1, 0))
 imgs_con.append(img_con_0)
 imgs_con[0].grid(row=1, column=0)
@@ -167,8 +162,8 @@ imgs_con.append(img_con_2)
 imgs_con[2].grid(row=1, column=2)
 
 img_con_3 = Button(root, image=imgs[3], command=lambda: move(2, 0))
-imgs_con.append(img_con_0)
-imgs_con[0].grid(row=2, column=0)
+imgs_con.append(img_con_3)
+imgs_con[3].grid(row=2, column=0)
 
 img_con_4 = Button(root, image=imgs[4], command=lambda: move(2, 1))
 imgs_con.append(img_con_4)
@@ -194,5 +189,6 @@ imgs_con[8].grid(row=3, column=2)
 full_img = ImageTk.PhotoImage(Image.open('./images/full_pic.jpg'))
 full_img_con = Label(root, image=full_img)
 full_img_con.grid(row=1, column=3, columnspan=2, rowspan=3)
+
 
 root.mainloop()
