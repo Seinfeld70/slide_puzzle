@@ -1,12 +1,16 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import random
-
+from pygame import mixer
 root = Tk()
 
 root.title("Zullu - Sliding Puzzle")
 root.iconbitmap("./images/favicon.ico")
 root.geometry("1250x650")
+
+mixer.init()
+mixer.music.load('./bg_audio.mp3')
+mixer.music.play()
 
 imgs = []
 imgs_con = []
@@ -36,6 +40,59 @@ def changeState(initial, final):
     state[final] = 8
 
 
+def showWinBox():
+    global imgs, imgs_con, state
+    print("\n\n\n\n\t\t\tYou've won the game.")
+    winBox = Tk()
+    winBox.title("Congrats!")
+    winBox.iconbitmap('./images/favicon.ico')
+    winBox.geometry("700x80")
+    state = []
+    imgs = []
+    imgs_con = []
+    start()
+    Button(winBox, text="You've win the game!", font=("Helvitica", 48),
+           fg="#11ff11", command=lambda: winBox.destroy()).pack(side=TOP)
+
+
+def checker():
+    global state
+    for x in state:
+        if(x == state[x]):
+            if x == 8:
+                showWinBox()
+        else:
+            break
+
+def swap(intial, final):
+    ir = intial['row']
+    ic = intial['column']
+    indexI = 3*(ir - 1) + ic
+    fr = final['row']
+    fc = final['column']
+    indexF = 3*(fr - 1) + fc
+    global imgs, imgs_con
+
+    print("initial\t", intial)
+    print("final\t", final)
+
+    print("IndexI\t", indexI)
+    print("IndexF\t", indexF)
+
+    imgs[indexI] = ImageTk.PhotoImage(Image.open(
+        './images/Layer 8.jpg'))
+
+    imgs[indexF] = ImageTk.PhotoImage(Image.open(
+        './images/Layer '+str(state[indexF]) + '.jpg'))
+
+    imgs_con[indexI] = Button(root, image=imgs[indexI],
+                              command=lambda: move(ir, ic))
+    imgs_con[indexF] = Button(root, image=imgs[indexF],
+                              command=lambda: move(fr, fc))
+
+    imgs_con[indexI].grid(row=ir, column=ic)
+    imgs_con[indexF].grid(row=fr, column=fc)
+    checker()
 def move(row, column):
     print("State Before\n", state)
     if row == 1 and column == 0:
@@ -121,56 +178,6 @@ def move(row, column):
             swap({"row": row, "column": column}, {"row": 3, "column": 1})
 
     print("State Before\n", state)
-
-
-def checker():
-    global state
-    for x in state:
-        if(x == state[x]):
-            if x == 8:
-                print("\n\n\n\n\t\t\tYou've won the game.")
-                winBox = Tk()
-                global imgs, imgs_con
-                state = []
-                imgs = []
-                imgs_con = []
-                start()
-                Button(winBox, text="You've win the game!", font=("Helvitica", 28), fg="#11ff11", command=lambda: winBox.destroy()).grid(
-                    row=0, column=0, padx=10, pady=10, ipadx=100, ipady=50)
-        else:
-            break
-
-
-def swap(intial, final):
-    ir = intial['row']
-    ic = intial['column']
-    indexI = 3*(ir - 1) + ic
-    fr = final['row']
-    fc = final['column']
-    indexF = 3*(fr - 1) + fc
-    global imgs, imgs_con
-
-    print("initial\t", intial)
-    print("final\t", final)
-
-    print("IndexI\t", indexI)
-    print("IndexF\t", indexF)
-
-    imgs[indexI] = ImageTk.PhotoImage(Image.open(
-        './images/Layer 8.jpg'))
-
-    imgs[indexF] = ImageTk.PhotoImage(Image.open(
-        './images/Layer '+str(state[indexF]) + '.jpg'))
-
-    imgs_con[indexI] = Button(root, image=imgs[indexI],
-                              command=lambda: move(ir, ic))
-    imgs_con[indexF] = Button(root, image=imgs[indexF],
-                              command=lambda: move(fr, fc))
-
-    imgs_con[indexI].grid(row=ir, column=ic)
-    imgs_con[indexF].grid(row=fr, column=fc)
-    checker()
-
 
 def start():
     global state, imgs, imgs_con, root
