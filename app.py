@@ -2,23 +2,6 @@ from tkinter import *
 from PIL import ImageTk, Image
 import random
 from pygame import mixer
-root = Tk()
-
-root.title("Zullu - Sliding Puzzle")
-root.iconbitmap("./images/favicon.ico")
-root.geometry("1250x650")
-
-mixer.init()
-mixer.music.load('./bg_audio.mp3')
-mixer.music.play()
-
-imgs = []
-imgs_con = []
-
-Label(root, text="Sliding Puzzle Game", font=("Helvetic", 29), fg="#0095ff").grid(
-    row=0, column=0,  columnspan=5, sticky=W+E, pady=10)
-
-state = []
 
 
 def itemAlreadyExist(arr, item):
@@ -40,8 +23,16 @@ def changeState(initial, final):
     state[final] = 8
 
 
+def handleClick():
+    global winBox
+    winBox.destroy()
+    start()
+
+
 def showWinBox():
-    global imgs, imgs_con, state
+    global imgs, imgs_con, state, winBox
+
+    mixer.music.stop()
     print("\n\n\n\n\t\t\tYou've won the game.")
     winBox = Tk()
     winBox.title("Congrats!")
@@ -50,9 +41,9 @@ def showWinBox():
     state = []
     imgs = []
     imgs_con = []
-    start()
+    # start()
     Button(winBox, text="You've win the game!", font=("Helvitica", 48),
-           fg="#11ff11", command=lambda: winBox.destroy()).pack(side=TOP)
+           fg="#11ff11", command=handleClick).pack(side=TOP)
 
 
 def checker():
@@ -63,6 +54,7 @@ def checker():
                 showWinBox()
         else:
             break
+
 
 def swap(intial, final):
     ir = intial['row']
@@ -93,8 +85,11 @@ def swap(intial, final):
     imgs_con[indexI].grid(row=ir, column=ic)
     imgs_con[indexF].grid(row=fr, column=fc)
     checker()
+
+
 def move(row, column):
     print("State Before\n", state)
+
     if row == 1 and column == 0:
         if (state[1] == 8):
             changeState(1, 0)
@@ -179,8 +174,11 @@ def move(row, column):
 
     print("State Before\n", state)
 
+
 def start():
     global state, imgs, imgs_con, root
+
+    mixer.music.play()
 
     for x in range(9):
         randomlyFill()
@@ -188,11 +186,6 @@ def start():
     for x in range(9):
         imgs.append(ImageTk.PhotoImage(Image.open(
             './images/Layer ' + str(state[x]) + '.jpg')))
-
-    # full image
-    full_img = ImageTk.PhotoImage(Image.open('./images/full_pic.jpg'))
-    full_img_con = Label(root, image=full_img)
-    full_img_con.grid(row=1, column=3, columnspan=2, rowspan=3)
 
     # other imgs
     img_con_0 = Button(root, image=imgs[0], command=lambda: move(1, 0))
@@ -231,6 +224,27 @@ def start():
     imgs_con.append(img_con_8)
     imgs_con[8].grid(row=3, column=2)
 
+
+root = Tk()
+root.title("Zullu - Sliding Puzzle")
+root.iconbitmap("./images/favicon.ico")
+root.geometry("1250x650")
+
+mixer.init()
+mixer.music.load('./bg_audio.mp3')
+
+Label(root, text="Sliding Puzzle Game", font=("Helvetic", 29), fg="#0095ff").grid(
+    row=0, column=0,  columnspan=5, sticky=W+E, pady=10)
+
+# full image
+full_img = ImageTk.PhotoImage(Image.open('./images/full_pic.jpg'))
+full_img_con = Button(root, image=full_img)
+full_img_con.grid(row=1, column=3, columnspan=2, rowspan=3, ipady=8)
+
+imgs = []
+imgs_con = []
+winBox = ''
+state = []
 
 start()
 
